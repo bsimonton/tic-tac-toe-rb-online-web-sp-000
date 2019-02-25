@@ -1,4 +1,15 @@
 
+WIN_COMBINATIONS = [
+  [0,1,2],
+  [3,4,5],
+  [6,7,8],
+  [0,3,6],
+  [1,4,7],
+  [2,5,8],
+  [0,4,8],
+  [2,4,6]
+]
+
 def display_board(board)
   puts " #{board[0]} | #{board[1]} | #{board[2]} "
   puts "-----------"
@@ -15,116 +26,123 @@ def move(board, index, current_player)
   board[index] = current_player
 end
 
-def position_taken?(board, location)
-  board[location] != " " && board[location] != ""
+def position_taken?(array, index)
+  if (array[index] == " " || array[index] == "" || array[index] == nil)
+    return false
+  else
+    return true
+  end
 end
 
-def valid_move?(board, index)
-  index.between?(0,8) && !position_taken?(board, index)
+def valid_move?(array, index)
+  if (index < 0 || index > 8)
+    return false
+  elsif position_taken?(array, index)
+    return false
+  else
+    return true
+  end
 end
 
 def turn(board)
   puts "Please enter 1-9:"
-  user_input = gets.strip
-  index = input_to_index(user_input)
-  token = current_player(board)
-end
-
-def turn_count(board)
-count = 0
-
-board.each do |space|
-  if space == "X" || space == "O"
-    count +=1
+  input = gets.strip
+  index = input_to_index(input)
+  if valid_move?(board, index)
+    move(board, index, current_player(board))
+    display_board(board)
+  else
+    turn(board)
   end
 end
 
-count
-
-
+def turn_count(array)
+  counter = 0
+  array.each do |element|
+    if (element == "X" || element == "O")
+      counter += 1
+    else
+      # do nothing
+    end
+  end
+  return counter
 end
-
-
 
 def current_player(board)
-  
-  if turn_count(board) % 2 == 0 
-    "X"
+  if (turn_count(board).even? == true)
+    return "X"
   else
-    "O"
+    return "O"
   end
-  
-end 
-
-
-WIN_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,4,8], [2,4,6],[0,3,6], [1,4,7], [2,5,8]] 
+end
 
 def won?(board)
-  winner = nil
-  WIN_COMBINATIONS.each do |combo|
-    if combo.all? {|idx| board[idx] == "X"}
-      winner = combo
-    elsif combo.all? {|idx| board[idx] == "O"}
-      winner = combo
+  WIN_COMBINATIONS.each do |win_combination|
+    win_index_1 = win_combination[0]
+    win_index_2 = win_combination[1]
+    win_index_3 = win_combination[2]
+    position_1 = board[win_index_1]
+    position_2 = board[win_index_2]
+    position_3 = board[win_index_3]
+    if ((position_1 == "X" && position_2 == "X" && position_3 == "X") || (position_1 == "O" && position_2 == "O" && position_3 == "O"))
+      return win_combination
     else
-      false
+      # do nothing
     end
   end
-  if winner != nil
-    winner
-  else
-    false
-  end
-  
-  
+  return nil
 end
 
-
-def full?(board)
-  
-  board.all? do |space|
-    space == "X" || space == "O"
-  end
-  
-end
-
-def draw?(board)
-  if full?(board)
-    if won?(board) == false
-      true
-    else 
-      false
-    end
-  else
-    false
-  end
-end
-
-
-def over?(board)
-   if draw?(board) || won?(board) || full?(board)
-     return true
-   end
-end
-
-
-
-
-
-
-def winner(board)
-  winner = nil
-  WIN_COMBINATIONS.each do |combo|
-    if combo.all? {|idx| board[idx] == "X"}
-      winner = "X"
-    elsif combo.all? {|idx| board[idx] == "O"}
-      winner = "O"
+def full?(array)
+  counter = 0
+  array.each do |element|
+    if (element == "X" || element == "O")
+      counter += 1
     else
+      # do nothing
     end
   end
-  winner
+  if counter == 9
+    return true
+  else
+    return false
+  end
 end
 
+def draw?(array)
+  if full?(array) && !won?(array)
+    return true
+  else
+    return false
+  end
+end
+
+def over?(array)
+  if ( won?(array) || draw?(array) || full?(array) )
+    return true
+  else
+    return false
+  end
+end
+
+def winner(array)
+  if won?(array)
+    WIN_COMBINATIONS.each do |win_combination|
+      position_1 = array[win_combination[0]]
+      position_2 = array[win_combination[1]]
+      position_3 = array[win_combination[2]]
+      if (position_1 == "X" && position_2 == "X" && position_3 == "X")
+        return "X"
+      elsif (position_1 == "O" && position_2 == "O" && position_3 == "O")
+        return "O"
+      else
+        # do nothing
+      end
+    end
+  else
+    return nil
+  end
+end
 
 def play(board)
   while !over?(board)
