@@ -35,7 +35,31 @@ def turn(board)
   end
 end
 
+def turn_count(board)
+count = 0
 
+board.each do |space|
+  if space == "X" || space == "O"
+    count +=1
+  end
+end
+
+count
+
+
+end
+
+
+
+def current_player(board)
+  
+  if turn_count(board) % 2 == 0 
+    "X"
+  else
+    "O"
+  end
+  
+end 
 
 
 WIN_COMBINATIONS = [[0,1,2], [3,4,5], [6,7,8], [0,4,8], [2,4,6],[0,3,6], [1,4,7], [2,5,8]] 
