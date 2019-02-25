@@ -127,15 +127,14 @@ end
 
 
 def play(board)
-  until over?(board) == true || won?(board) != false
-  puts 'turn'
+  while !over?(board)
     turn(board)
   end
-  if winner(board)
-    puts "Congratulations!"
+  if won?(board)
+    puts "Congratulations " + winner(board) + "!"
   elsif draw?(board)
-    puts "Draw!"
+    puts "Cat's Game!"
   else
-    return nil
+    #do nothing
   end
 end
