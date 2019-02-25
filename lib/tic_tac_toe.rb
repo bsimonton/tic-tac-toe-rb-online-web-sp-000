@@ -124,3 +124,18 @@ def winner(board)
   end
   winner
 end
+
+
+def play(board)
+  until over?(board) == true || won?(board) != false
+  puts 'turn'
+    turn(board)
+  end
+  if winner(board)
+    puts "Congratulations!"
+  elsif draw?(board)
+    puts "Draw!"
+  else
+    return nil
+  end
+end
